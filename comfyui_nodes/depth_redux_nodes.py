@@ -47,13 +47,14 @@ class MfluxDepthConditioning:
         negative_prompt: str = "",
     ) -> Tuple[torch.Tensor]:
         from mflux.models.flux import Flux1
+        from mflux.models.common.config import ModelConfig
 
         # Parse quantization
         quant = None if quantize == "none" else int(quantize)
 
-        # Load model
+        # Load model - auto-downloads from HuggingFace if not cached
         mflux_model = Flux1(
-            model_name="dev-depth",
+            model_config=ModelConfig.from_name(model_name="dev-depth"),
             quantize=quant,
         )
 
@@ -131,13 +132,14 @@ class MfluxRedux:
         negative_prompt: str = "",
     ) -> Tuple[torch.Tensor]:
         from mflux.models.flux import Flux1
+        from mflux.models.common.config import ModelConfig
 
         # Parse quantization
         quant = None if quantize == "none" else int(quantize)
 
-        # Load model
+        # Load model - auto-downloads from HuggingFace if not cached
         mflux_model = Flux1(
-            model_name="dev-redux",
+            model_config=ModelConfig.from_name(model_name="dev-redux"),
             quantize=quant,
         )
 
@@ -213,10 +215,13 @@ class MfluxDepthExtraction:
     ) -> Tuple[torch.Tensor]:
         from mflux.models.depth_pro import DepthPro
 
-        # Load model
-        mflux_model = DepthPro(
-            model_name=model_path if model_path else None,
-        )
+        # Load model - auto-downloads from HuggingFace if not cached
+        if model_path:
+            mflux_model = DepthPro(
+                model_path=model_path,
+            )
+        else:
+            mflux_model = DepthPro()
 
         # Convert ComfyUI image tensor to PIL Image
         image_np = (image[0].cpu().numpy() * 255).astype(np.uint8)

@@ -53,6 +53,7 @@ class MfluxFlux1Loader:
         lora_scales: str = "",
     ) -> Tuple[Dict[str, Any]]:
         from mflux.models.flux import Flux1
+        from mflux.models.common.config import ModelConfig
 
         # Parse quantization
         quant = None if quantize == "none" else int(quantize)
@@ -61,13 +62,24 @@ class MfluxFlux1Loader:
         lora_path_list = [p.strip() for p in lora_paths.split("\n") if p.strip()] if lora_paths else None
         lora_scale_list = [float(s.strip()) for s in lora_scales.split(",") if s.strip()] if lora_scales else None
 
-        # Load model
-        model = Flux1(
-            model_name=model_path if model_path else model_variant,
-            quantize=quant,
-            lora_paths=lora_path_list,
-            lora_scales=lora_scale_list,
-        )
+        # Load model - if custom path provided, use it; otherwise use variant config
+        if model_path:
+            # Custom model path (local or HuggingFace repo)
+            model = Flux1(
+                model_config=ModelConfig.from_name(model_name=model_variant),
+                quantize=quant,
+                model_path=model_path,
+                lora_paths=lora_path_list,
+                lora_scales=lora_scale_list,
+            )
+        else:
+            # Use default config which will auto-download from HuggingFace
+            model = Flux1(
+                model_config=ModelConfig.from_name(model_name=model_variant),
+                quantize=quant,
+                lora_paths=lora_path_list,
+                lora_scales=lora_scale_list,
+            )
 
         return (
             {
@@ -109,6 +121,7 @@ class MfluxFlux2KleinLoader:
         lora_scales: str = "",
     ) -> Tuple[Dict[str, Any]]:
         from mflux.models.flux2 import Flux2Klein
+        from mflux.models.common.config import ModelConfig
 
         # Parse quantization
         quant = None if quantize == "none" else int(quantize)
@@ -117,19 +130,27 @@ class MfluxFlux2KleinLoader:
         lora_path_list = [p.strip() for p in lora_paths.split("\n") if p.strip()] if lora_paths else None
         lora_scale_list = [float(s.strip()) for s in lora_scales.split(",") if s.strip()] if lora_scales else None
 
-        # Determine model name
-        if model_path:
-            model_name = model_path
-        else:
-            model_name = f"flux2-klein-{model_size.lower()}"
+        # Determine model name for config
+        model_name = f"flux2-klein-{model_size.lower()}"
 
-        # Load model
-        model = Flux2Klein(
-            model_name=model_name,
-            quantize=quant,
-            lora_paths=lora_path_list,
-            lora_scales=lora_scale_list,
-        )
+        # Load model - if custom path provided, use it; otherwise use default config
+        if model_path:
+            # Custom model path (local or HuggingFace repo)
+            model = Flux2Klein(
+                model_config=ModelConfig.from_name(model_name=model_name),
+                quantize=quant,
+                model_path=model_path,
+                lora_paths=lora_path_list,
+                lora_scales=lora_scale_list,
+            )
+        else:
+            # Use default config which will auto-download from HuggingFace
+            model = Flux2Klein(
+                model_config=ModelConfig.from_name(model_name=model_name),
+                quantize=quant,
+                lora_paths=lora_path_list,
+                lora_scales=lora_scale_list,
+            )
 
         return (
             {
@@ -177,13 +198,22 @@ class MfluxZImageTurboLoader:
         lora_path_list = [p.strip() for p in lora_paths.split("\n") if p.strip()] if lora_paths else None
         lora_scale_list = [float(s.strip()) for s in lora_scales.split(",") if s.strip()] if lora_scales else None
 
-        # Load model
-        model = ZImageTurbo(
-            model_name=model_path if model_path else None,
-            quantize=quant,
-            lora_paths=lora_path_list,
-            lora_scales=lora_scale_list,
-        )
+        # Load model - will auto-download from HuggingFace if not cached
+        if model_path:
+            # Custom model path (local or HuggingFace repo)
+            model = ZImageTurbo(
+                quantize=quant,
+                model_path=model_path,
+                lora_paths=lora_path_list,
+                lora_scales=lora_scale_list,
+            )
+        else:
+            # Use default config (Tongyi-MAI/Z-Image-Turbo)
+            model = ZImageTurbo(
+                quantize=quant,
+                lora_paths=lora_path_list,
+                lora_scales=lora_scale_list,
+            )
 
         return (
             {
@@ -230,13 +260,22 @@ class MfluxFiboLoader:
         lora_path_list = [p.strip() for p in lora_paths.split("\n") if p.strip()] if lora_paths else None
         lora_scale_list = [float(s.strip()) for s in lora_scales.split(",") if s.strip()] if lora_scales else None
 
-        # Load model
-        model = Fibo(
-            model_name=model_path if model_path else None,
-            quantize=quant,
-            lora_paths=lora_path_list,
-            lora_scales=lora_scale_list,
-        )
+        # Load model - will auto-download from HuggingFace if not cached
+        if model_path:
+            # Custom model path (local or HuggingFace repo)
+            model = Fibo(
+                quantize=quant,
+                model_path=model_path,
+                lora_paths=lora_path_list,
+                lora_scales=lora_scale_list,
+            )
+        else:
+            # Use default config (briaai/FIBO)
+            model = Fibo(
+                quantize=quant,
+                lora_paths=lora_path_list,
+                lora_scales=lora_scale_list,
+            )
 
         return (
             {
@@ -277,6 +316,7 @@ class MfluxQwenImageLoader:
         lora_scales: str = "",
     ) -> Tuple[Dict[str, Any]]:
         from mflux.models.qwen_image import QwenImage
+        from mflux.models.common.config import ModelConfig
 
         # Parse quantization
         quant = None if quantize == "none" else int(quantize)
@@ -285,13 +325,24 @@ class MfluxQwenImageLoader:
         lora_path_list = [p.strip() for p in lora_paths.split("\n") if p.strip()] if lora_paths else None
         lora_scale_list = [float(s.strip()) for s in lora_scales.split(",") if s.strip()] if lora_scales else None
 
-        # Load model
-        model = QwenImage(
-            model_name=model_path if model_path else model_variant,
-            quantize=quant,
-            lora_paths=lora_path_list,
-            lora_scales=lora_scale_list,
-        )
+        # Load model - if custom path provided, use it; otherwise use variant config
+        if model_path:
+            # Custom model path (local or HuggingFace repo)
+            model = QwenImage(
+                model_config=ModelConfig.from_name(model_name=model_variant),
+                quantize=quant,
+                model_path=model_path,
+                lora_paths=lora_path_list,
+                lora_scales=lora_scale_list,
+            )
+        else:
+            # Use default config which will auto-download from HuggingFace
+            model = QwenImage(
+                model_config=ModelConfig.from_name(model_name=model_variant),
+                quantize=quant,
+                lora_paths=lora_path_list,
+                lora_scales=lora_scale_list,
+            )
 
         return (
             {
@@ -331,11 +382,18 @@ class MfluxSeedVR2Loader:
         # Parse quantization
         quant = None if quantize == "none" else int(quantize)
 
-        # Load model
-        model = SeedVR2(
-            model_name=model_path if model_path else None,
-            quantize=quant,
-        )
+        # Load model - will auto-download from HuggingFace if not cached
+        if model_path:
+            # Custom model path (local or HuggingFace repo)
+            model = SeedVR2(
+                quantize=quant,
+                model_path=model_path,
+            )
+        else:
+            # Use default config (numz/SeedVR2_comfyUI)
+            model = SeedVR2(
+                quantize=quant,
+            )
 
         return (
             {
@@ -368,10 +426,15 @@ class MfluxDepthProLoader:
     ) -> Tuple[Dict[str, Any]]:
         from mflux.models.depth_pro import DepthPro
 
-        # Load model
-        model = DepthPro(
-            model_name=model_path if model_path else None,
-        )
+        # Load model - will auto-download from HuggingFace if not cached
+        if model_path:
+            # Custom model path (local or HuggingFace repo)
+            model = DepthPro(
+                model_path=model_path,
+            )
+        else:
+            # Use default config (apple/ml-depth-pro)
+            model = DepthPro()
 
         return (
             {

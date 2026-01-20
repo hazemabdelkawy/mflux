@@ -49,13 +49,14 @@ class MfluxFill:
         negative_prompt: str = "",
     ) -> Tuple[torch.Tensor]:
         from mflux.models.flux import Flux1
+        from mflux.models.common.config import ModelConfig
 
         # Parse quantization
         quant = None if quantize == "none" else int(quantize)
 
-        # Load model
+        # Load model - auto-downloads from HuggingFace if not cached
         mflux_model = Flux1(
-            model_name="dev-fill",
+            model_config=ModelConfig.from_name(model_name="dev-fill"),
             quantize=quant,
         )
 

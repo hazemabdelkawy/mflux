@@ -51,14 +51,15 @@ class MfluxControlNetCanny:
         negative_prompt: str = "",
     ) -> Tuple[torch.Tensor]:
         from mflux.models.flux_controlnet import FluxControlnet
+        from mflux.models.common.config import ModelConfig
 
         # Parse quantization
         quant = None if quantize == "none" else int(quantize)
 
-        # Load model
+        # Load model - auto-downloads from HuggingFace if not cached
         model_name = f"{model_variant}-controlnet-canny"
         mflux_model = FluxControlnet(
-            model_name=model_name,
+            model_config=ModelConfig.from_name(model_name=model_name),
             quantize=quant,
         )
 
@@ -131,13 +132,14 @@ class MfluxControlNetUpscaler:
         negative_prompt: str = "",
     ) -> Tuple[torch.Tensor]:
         from mflux.models.flux_controlnet import FluxControlnet
+        from mflux.models.common.config import ModelConfig
 
         # Parse quantization
         quant = None if quantize == "none" else int(quantize)
 
-        # Load model
+        # Load model - auto-downloads from HuggingFace if not cached
         mflux_model = FluxControlnet(
-            model_name="dev-controlnet-upscaler",
+            model_config=ModelConfig.from_name(model_name="dev-controlnet-upscaler"),
             quantize=quant,
         )
 

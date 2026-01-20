@@ -28,12 +28,54 @@ Comprehensive ComfyUI custom nodes for the MFLUX image generation framework. The
 - ✅ Quantization (4-bit, 8-bit for memory optimization)
 - ✅ Depth extraction (DepthPro)
 
+## Automatic Model Downloading
+
+**All models automatically download from HuggingFace when first loaded!**
+
+The ComfyUI nodes are designed to automatically download models from HuggingFace Hub when you first use them. No manual downloading required!
+
+### How it works:
+1. **First load**: Models download from HuggingFace (can take a while depending on model size)
+2. **Subsequent loads**: Models load from local cache (very fast)
+3. **Cache location**: Models are cached in `~/.cache/huggingface/hub/` by default
+
+### Model sizes and download times:
+- **FLUX.1 schnell/dev**: ~24GB (full precision) or ~12GB (8-bit quantized)
+- **FLUX.2 Klein 4B**: ~8GB (full precision) or ~4GB (8-bit quantized)
+- **FLUX.2 Klein 9B**: ~18GB (full precision) or ~9GB (8-bit quantized)
+- **Z-Image Turbo**: ~12GB (full precision) or ~6GB (8-bit quantized)
+- **FIBO**: ~16GB (full precision) or ~8GB (8-bit quantized)
+- **Qwen Image**: ~40GB (full precision) or ~20GB (8-bit quantized)
+- **SeedVR2**: ~6GB (full precision) or ~3GB (8-bit quantized)
+
+### Default HuggingFace repositories:
+- **FLUX.1 dev**: `black-forest-labs/FLUX.1-dev`
+- **FLUX.1 schnell**: `black-forest-labs/FLUX.1-schnell`
+- **FLUX.2 Klein 4B**: `black-forest-labs/FLUX.2-klein-4B`
+- **FLUX.2 Klein 9B**: `black-forest-labs/FLUX.2-klein-9B`
+- **Z-Image Turbo**: `Tongyi-MAI/Z-Image-Turbo`
+- **FIBO**: `briaai/FIBO`
+- **Qwen Image**: `Qwen/Qwen-Image`
+- **Qwen Image Edit**: `Qwen/Qwen-Image-Edit-2509`
+- **SeedVR2**: `numz/SeedVR2_comfyUI`
+- **DepthPro**: `apple/ml-depth-pro`
+
+### Custom models:
+You can also use custom models by specifying:
+- **Local path**: `/path/to/my/model`
+- **HuggingFace repo**: `username/model-name`
+
+The nodes will automatically detect the format and load accordingly!
+
+---
+
 ## Installation
 
 ### Prerequisites
 - ComfyUI installed and working
 - Python 3.10+
 - MFLUX installed (`pip install mflux`)
+- Sufficient disk space for model downloads (see sizes above)
 
 ### Install Nodes
 
@@ -59,54 +101,81 @@ cp -r /path/to/mflux/comfyui_nodes /path/to/ComfyUI/custom_nodes/mflux_nodes
 ### Restart ComfyUI
 After installation, restart ComfyUI to load the new nodes.
 
+---
+
+## Quick Start
+
+1. **Install the nodes** (see Installation above)
+2. **Open ComfyUI** and create a new workflow
+3. **Add a model loader** (e.g., "MFLUX FLUX.2 Klein Loader")
+   - Choose model size (4B or 9B)
+   - Set quantization to 8 for good balance of speed and quality
+   - Leave model_path empty to auto-download from HuggingFace
+   - First run will download the model (be patient!)
+4. **Add a generation node** (e.g., "MFLUX Text to Image")
+   - Connect the model output from the loader
+   - Enter your prompt
+   - Adjust steps (4-8 for FLUX.2, 20-30 for others)
+   - Set guidance (1.0 for FLUX.2, 3.5-4.0 for others)
+5. **Add a Save Image node** to save the result
+6. **Queue the workflow** and wait for generation!
+
+**First-time users**: The first run will download models from HuggingFace. This can take 10-30 minutes depending on your connection and model size. Subsequent runs will be much faster as models are cached locally.
+
+---
+
 ## Node Reference
 
 ### Model Loaders
 
 #### MFLUX FLUX.1 Loader
-Loads FLUX.1 models with various variants.
+Loads FLUX.1 models with various variants. **Automatically downloads from HuggingFace on first use.**
 
 **Inputs:**
 - `model_variant`: Choose from dev, schnell, dev-fill, dev-redux, dev-depth, dev-kontext, krea-dev
 - `quantize`: none, 4, or 8 (default: 8)
-- `model_path` (optional): Custom model path or HuggingFace repo
-- `lora_paths` (optional): One LoRA path per line
+- `model_path` (optional): Leave empty to auto-download, or specify custom path/HuggingFace repo
+- `lora_paths` (optional): One LoRA path per line (supports HuggingFace repos)
 - `lora_scales` (optional): Comma-separated scales (e.g., "1.0, 0.8")
 
 **Outputs:**
 - `model`: MFLUX model ready for generation
 
+**Note**: Leave `model_path` empty to use the default HuggingFace repository for the selected variant. The model will download automatically on first use and be cached for future loads.
+
 #### MFLUX FLUX.2 Klein Loader
-Loads FLUX.2 Klein models (4B or 9B).
+Loads FLUX.2 Klein models (4B or 9B). **Automatically downloads from HuggingFace on first use.**
 
 **Inputs:**
 - `model_size`: 4B or 9B
 - `quantize`: none, 4, or 8 (default: 8)
-- `model_path` (optional): Custom model path
-- `lora_paths` (optional): One LoRA path per line
+- `model_path` (optional): Leave empty to auto-download, or specify custom path/HuggingFace repo
+- `lora_paths` (optional): One LoRA path per line (supports HuggingFace repos)
 - `lora_scales` (optional): Comma-separated scales
 
 **Outputs:**
 - `model`: MFLUX model ready for generation
 
+**Note**: Default HuggingFace repos: `black-forest-labs/FLUX.2-klein-4B` and `black-forest-labs/FLUX.2-klein-9B`
+
 #### MFLUX Z-Image Turbo Loader
-Loads Z-Image Turbo model for fast, high-quality generation.
+Loads Z-Image Turbo model for fast, high-quality generation. **Auto-downloads from `Tongyi-MAI/Z-Image-Turbo`.**
 
 #### MFLUX FIBO Loader
-Loads FIBO model for JSON-native structured prompts.
+Loads FIBO model for JSON-native structured prompts. **Auto-downloads from `briaai/FIBO`.**
 
 #### MFLUX Qwen Image Loader
-Loads Qwen Image models (base or edit variant).
+Loads Qwen Image models (base or edit variant). **Auto-downloads from HuggingFace.**
 
 **Inputs:**
-- `model_variant`: qwen-image or qwen-image-edit
+- `model_variant`: qwen-image or qwen-image-edit (default HF repos: `Qwen/Qwen-Image` and `Qwen/Qwen-Image-Edit-2509`)
 - `quantize`: none, 4, or 8
 
 #### MFLUX SeedVR2 Loader
-Loads SeedVR2 upscaling model.
+Loads SeedVR2 upscaling model. **Auto-downloads from `numz/SeedVR2_comfyUI`.**
 
 #### MFLUX DepthPro Loader
-Loads DepthPro model for depth estimation.
+Loads DepthPro model for depth estimation. **Auto-downloads from `apple/ml-depth-pro`.**
 
 ---
 
