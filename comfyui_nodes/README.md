@@ -41,24 +41,29 @@ The ComfyUI nodes are designed to automatically download models from HuggingFace
 
 ### Model sizes and download times:
 - **FLUX.1 schnell/dev**: ~24GB (full precision) or ~12GB (8-bit quantized)
+- **FLUX.1 variants** (fill, redux, depth, kontext, krea): Similar to schnell/dev
 - **FLUX.2 Klein 4B**: ~8GB (full precision) or ~4GB (8-bit quantized)
 - **FLUX.2 Klein 9B**: ~18GB (full precision) or ~9GB (8-bit quantized)
 - **Z-Image Turbo**: ~12GB (full precision) or ~6GB (8-bit quantized)
 - **FIBO**: ~16GB (full precision) or ~8GB (8-bit quantized)
 - **Qwen Image**: ~40GB (full precision) or ~20GB (8-bit quantized)
 - **SeedVR2**: ~6GB (full precision) or ~3GB (8-bit quantized)
+- **DepthPro**: ~200MB (downloads from Apple's CDN)
 
-### Default HuggingFace repositories:
-- **FLUX.1 dev**: `black-forest-labs/FLUX.1-dev`
-- **FLUX.1 schnell**: `black-forest-labs/FLUX.1-schnell`
-- **FLUX.2 Klein 4B**: `black-forest-labs/FLUX.2-klein-4B`
-- **FLUX.2 Klein 9B**: `black-forest-labs/FLUX.2-klein-9B`
-- **Z-Image Turbo**: `Tongyi-MAI/Z-Image-Turbo`
-- **FIBO**: `briaai/FIBO`
-- **Qwen Image**: `Qwen/Qwen-Image`
-- **Qwen Image Edit**: `Qwen/Qwen-Image-Edit-2509`
-- **SeedVR2**: `numz/SeedVR2_comfyUI`
-- **DepthPro**: `apple/ml-depth-pro`
+### Default model sources:
+- **FLUX.1 dev**: `black-forest-labs/FLUX.1-dev` (HuggingFace)
+- **FLUX.1 schnell**: `black-forest-labs/FLUX.1-schnell` (HuggingFace)
+- **FLUX.1 variants** (fill, redux, depth, kontext, krea): `black-forest-labs/FLUX.1-*` (HuggingFace)
+- **FLUX.2 Klein 4B**: `black-forest-labs/FLUX.2-klein-4B` (HuggingFace)
+- **FLUX.2 Klein 9B**: `black-forest-labs/FLUX.2-klein-9B` (HuggingFace)
+- **Z-Image Turbo**: `Tongyi-MAI/Z-Image-Turbo` (HuggingFace)
+- **FIBO**: `briaai/FIBO` (HuggingFace)
+- **Qwen Image**: `Qwen/Qwen-Image` (HuggingFace)
+- **Qwen Image Edit**: `Qwen/Qwen-Image-Edit-2509` (HuggingFace)
+- **SeedVR2**: `numz/SeedVR2_comfyUI` (HuggingFace)
+- **DepthPro**: Downloads directly from Apple's CDN (not HuggingFace)
+- **ControlNet Canny**: `InstantX/FLUX.1-dev-Controlnet-Canny` (HuggingFace)
+- **ControlNet Upscaler**: `jasperai/Flux.1-dev-Controlnet-Upscaler` (HuggingFace)
 
 ### Custom models:
 You can also use custom models by specifying:
@@ -175,7 +180,7 @@ Loads Qwen Image models (base or edit variant). **Auto-downloads from HuggingFac
 Loads SeedVR2 upscaling model. **Auto-downloads from `numz/SeedVR2_comfyUI`.**
 
 #### MFLUX DepthPro Loader
-Loads DepthPro model for depth estimation. **Auto-downloads from `apple/ml-depth-pro`.**
+Loads DepthPro model for depth estimation. **Auto-downloads from Apple's CDN** (not HuggingFace).
 
 ---
 
