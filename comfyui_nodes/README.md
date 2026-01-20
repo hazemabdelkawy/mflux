@@ -39,31 +39,50 @@ The ComfyUI nodes are designed to automatically download models from HuggingFace
 2. **Subsequent loads**: Models load from local cache (very fast)
 3. **Cache location**: Models are cached in `~/.cache/huggingface/hub/` by default
 
-### Model sizes and download times:
-- **FLUX.1 schnell/dev**: ~24GB (full precision) or ~12GB (8-bit quantized)
-- **FLUX.1 variants** (fill, redux, depth, kontext, krea): Similar to schnell/dev
-- **FLUX.2 Klein 4B**: ~8GB (full precision) or ~4GB (8-bit quantized)
-- **FLUX.2 Klein 9B**: ~18GB (full precision) or ~9GB (8-bit quantized)
-- **Z-Image Turbo**: ~12GB (full precision) or ~6GB (8-bit quantized)
-- **FIBO**: ~16GB (full precision) or ~8GB (8-bit quantized)
-- **Qwen Image**: ~40GB (full precision) or ~20GB (8-bit quantized)
-- **SeedVR2**: ~6GB (full precision) or ~3GB (8-bit quantized)
-- **DepthPro**: ~200MB (downloads from Apple's CDN)
+### Model sizes (approximate):
+- **FLUX.1** (dev, schnell, fill, redux, depth, kontext, krea): ~24GB (full) / ~12GB (8-bit)
+- **FLUX.2 Klein 4B**: ~8GB (full) / ~4GB (8-bit)
+- **FLUX.2 Klein 9B**: ~18GB (full) / ~9GB (8-bit)
+- **Z-Image Turbo**: ~12GB (full) / ~6GB (8-bit)
+- **FIBO**: ~16GB (full) / ~8GB (8-bit)
+- **Qwen Image/Edit**: ~40GB (full) / ~20GB (8-bit)
+- **SeedVR2**: ~6GB (full) / ~3GB (8-bit)
+- **DepthPro**: ~200MB
+- **ControlNet models**: Included with base FLUX.1 models
+- **CatVTON**: ~2GB (additional transformer)
 
 ### Default model sources:
-- **FLUX.1 dev**: `black-forest-labs/FLUX.1-dev` (HuggingFace)
-- **FLUX.1 schnell**: `black-forest-labs/FLUX.1-schnell` (HuggingFace)
-- **FLUX.1 variants** (fill, redux, depth, kontext, krea): `black-forest-labs/FLUX.1-*` (HuggingFace)
-- **FLUX.2 Klein 4B**: `black-forest-labs/FLUX.2-klein-4B` (HuggingFace)
-- **FLUX.2 Klein 9B**: `black-forest-labs/FLUX.2-klein-9B` (HuggingFace)
-- **Z-Image Turbo**: `Tongyi-MAI/Z-Image-Turbo` (HuggingFace)
-- **FIBO**: `briaai/FIBO` (HuggingFace)
-- **Qwen Image**: `Qwen/Qwen-Image` (HuggingFace)
-- **Qwen Image Edit**: `Qwen/Qwen-Image-Edit-2509` (HuggingFace)
-- **SeedVR2**: `numz/SeedVR2_comfyUI` (HuggingFace)
-- **DepthPro**: Downloads directly from Apple's CDN (not HuggingFace)
-- **ControlNet Canny**: `InstantX/FLUX.1-dev-Controlnet-Canny` (HuggingFace)
-- **ControlNet Upscaler**: `jasperai/Flux.1-dev-Controlnet-Upscaler` (HuggingFace)
+
+**FLUX.1 Models:**
+- **dev**: `black-forest-labs/FLUX.1-dev`
+- **schnell**: `black-forest-labs/FLUX.1-schnell`
+- **Fill (dev-fill)**: `black-forest-labs/FLUX.1-Fill-dev`
+- **Fill CatVTON (dev-fill-catvton)**: `black-forest-labs/FLUX.1-Fill-dev` + `xiaozaa/catvton-flux-beta`
+- **Redux (dev-redux)**: `black-forest-labs/FLUX.1-Redux-dev`
+- **Depth (dev-depth)**: `black-forest-labs/FLUX.1-Depth-dev`
+- **Kontext (dev-kontext)**: `black-forest-labs/FLUX.1-Kontext-dev`
+- **Krea (krea-dev)**: `black-forest-labs/FLUX.1-Krea-dev`
+
+**FLUX.2 Models:**
+- **Klein 4B**: `black-forest-labs/FLUX.2-klein-4B`
+- **Klein 9B**: `black-forest-labs/FLUX.2-klein-9B`
+
+**Other Models:**
+- **Z-Image Turbo**: `Tongyi-MAI/Z-Image-Turbo`
+- **FIBO**: `briaai/FIBO`
+- **Qwen Image**: `Qwen/Qwen-Image`
+- **Qwen Image Edit**: `Qwen/Qwen-Image-Edit-2509`
+- **SeedVR2**: `numz/SeedVR2_comfyUI`
+- **DepthPro**: Downloads from `https://ml-site.cdn-apple.com/models/depth-pro/depth_pro.pt` (Apple CDN)
+
+**ControlNet Models:**
+- **Canny**: `InstantX/FLUX.1-dev-Controlnet-Canny`
+- **Upscaler**: `jasperai/Flux.1-dev-Controlnet-Upscaler`
+
+**Virtual Try-On:**
+- **CatVTON**: `xiaozaa/catvton-flux-beta` (custom transformer for dev-fill-catvton)
+
+*All models except DepthPro are downloaded from HuggingFace.*
 
 ### Custom models:
 You can also use custom models by specifying:
@@ -137,7 +156,7 @@ After installation, restart ComfyUI to load the new nodes.
 Loads FLUX.1 models with various variants. **Automatically downloads from HuggingFace on first use.**
 
 **Inputs:**
-- `model_variant`: Choose from dev, schnell, dev-fill, dev-redux, dev-depth, dev-kontext, krea-dev
+- `model_variant`: Choose from dev, schnell, dev-fill, dev-fill-catvton, dev-redux, dev-depth, dev-kontext, krea-dev
 - `quantize`: none, 4, or 8 (default: 8)
 - `model_path` (optional): Leave empty to auto-download, or specify custom path/HuggingFace repo
 - `lora_paths` (optional): One LoRA path per line (supports HuggingFace repos)

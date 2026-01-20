@@ -20,6 +20,7 @@ class MfluxFlux1Loader:
                         "dev",
                         "schnell",
                         "dev-fill",
+                        "dev-fill-catvton",
                         "dev-redux",
                         "dev-depth",
                         "dev-kontext",
